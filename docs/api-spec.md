@@ -26,6 +26,25 @@
 
 ---
 
+## 数据模型
+
+```javascript
+PaymentRecord {
+  id:            string          // 唯一标识
+  type:          'income' | 'expense'   // 收支类型
+  amount:        number          // 金额
+  category:      string          // 分类：food/transport/shopping/hotel/entertain/transfer/redpacket/other
+  paymentTime:   string          // ISO 8601
+  merchant:      string          // 商家名称
+  platform:      'wechat' | 'alipay' | 'bank' | 'other'
+  orderNumber:   string          // 订单编号
+  description:   string          // 备注
+  createdAt:     string          // ISO 8601
+}
+```
+
+---
+
 ## 1. 获取记录列表
 
 ```
@@ -41,53 +60,12 @@ GET /api/records?page=1&pageSize=20&sort=paymentTime&order=desc
 | sort | string | 否 | 排序字段，默认 paymentTime |
 | order | string | 否 | asc / desc，默认 desc |
 
-**响应示例：**
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {
-    "records": [
-      {
-        "id": "uuid-1",
-        "amount": 128.50,
-        "paymentTime": "2024-01-15T14:30:00+08:00",
-        "orderNumber": "2024011520012345678",
-        "platform": "wechat",
-        "description": "午餐消费",
-        "createdAt": "2024-01-15T14:31:00+08:00"
-      }
-    ],
-    "total": 1,
-    "page": 1,
-    "pageSize": 20
-  }
-}
-```
-
 ---
 
 ## 2. 获取单条记录
 
 ```
 GET /api/records/:id
-```
-
-**响应示例：**
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {
-    "id": "uuid-1",
-    "amount": 128.50,
-    "paymentTime": "2024-01-15T14:30:00+08:00",
-    "orderNumber": "2024011520012345678",
-    "platform": "wechat",
-    "description": "午餐消费",
-    "createdAt": "2024-01-15T14:31:00+08:00"
-  }
-}
 ```
 
 ---
@@ -101,101 +79,67 @@ POST /api/records
 **请求体：**
 ```json
 {
+  "type": "expense",
   "amount": 128.50,
-  "paymentTime": "2024-01-15T14:30:00+08:00",
-  "orderNumber": "2024011520012345678",
+  "category": "food",
+  "paymentTime": "2026-06-01T14:30:00+08:00",
+  "merchant": "麦当劳",
   "platform": "wechat",
+  "orderNumber": "2024060120012345678",
   "description": "午餐消费"
-}
-```
-
-**响应示例：**
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {
-    "id": "uuid-1",
-    "amount": 128.50,
-    "paymentTime": "2024-01-15T14:30:00+08:00",
-    "orderNumber": "2024011520012345678",
-    "platform": "wechat",
-    "description": "午餐消费",
-    "createdAt": "2024-01-15T14:31:00+08:00"
-  }
 }
 ```
 
 ---
 
-## 4. 删除记录
+## 4. 更新记录
+
+```
+PUT /api/records/:id
+```
+
+请求体同新增（部分字段可选）。
+
+---
+
+## 5. 删除记录
 
 ```
 DELETE /api/records/:id
 ```
 
-**响应示例：**
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": null
-}
-```
-
 ---
 
-## 5. 搜索记录
+## 6. 搜索记录
 
 ```
-GET /api/records/search?keyword=午餐&startDate=2024-01-01&endDate=2024-01-31
+GET /api/records/search?keyword=麦当劳&startDate=2026-06-01&endDate=2026-06-01&category=food
 ```
 
 **请求参数：**
 
 | 参数 | 类型 | 必填 | 说明 |
 |------|------|------|------|
-| keyword | string | 否 | 搜索关键词（匹配订单号、备注） |
+| keyword | string | 否 | 搜索关键词（匹配订单号、备注、金额、商家） |
 | startDate | string | 否 | 开始日期 YYYY-MM-DD |
 | endDate | string | 否 | 结束日期 YYYY-MM-DD |
+| category | string | 否 | 分类筛选 |
 
 ---
 
-## 6. 触发爬虫抓取（预留）
+## 7. 批量导入
 
 ```
-POST /api/scrape/trigger
+POST /api/records/batch
 ```
 
 **请求体：**
 ```json
 {
-  "platforms": ["wechat", "alipay"]
-}
-```
-
----
-
-## 7. 查询爬虫状态（预留）
-
-```
-GET /api/scrape/status
-```
-
-**响应示例：**
-```json
-{
-  "code": 0,
-  "message": "success",
-  "data": {
-    "status": "idle",
-    "lastRunTime": "2024-01-15T14:30:00+08:00",
-    "lastResult": {
-      "total": 5,
-      "success": 4,
-      "failed": 1
-    }
-  }
+  "records": [
+    { "type": "expense", "amount": 25.00, "category": "food", ... },
+    { "type": "expense", "amount": 10.00, "category": "transport", ... }
+  ]
 }
 ```
 
@@ -203,4 +147,12 @@ GET /api/scrape/status
 
 ## Mock 实现说明
 
-当前阶段 `src/api/index.js` 直接操作 Pinia Store，所有方法同步返回结果。未来对接后端时，只需修改该文件的方法实现，改为 `fetch` 调用，其他代码无需变动。
+当前阶段 `src/api/index.js` 直接操作 Pinia Store，所有方法同步返回结果。3 个 Store 通过 `pinia-plugin-persistedstate` 自动持久化到 localStorage：
+
+| Store | localStorage Key |
+|-------|-----------------|
+| records | `jizhang-records` |
+| preferences | `jizhang-preferences` |
+| user | `jizhang-user` |
+
+未来对接后端时，只需修改 `src/api/index.js` 的方法实现，改为 `fetch` 调用，其他代码无需变动。
