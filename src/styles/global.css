@@ -1,0 +1,158 @@
+/* ===== 全局样式 & 主题变量 ===== */
+
+:root {
+  /* 主色系 */
+  --color-primary: #5B9BD5;
+  --color-primary-light: #E8F4FD;
+  --color-primary-dark: #3A7CC3;
+
+  /* 功能色 */
+  --color-success: #52C41A;
+  --color-warning: #FAAD14;
+  --color-danger: #FF4D4F;
+
+  /* 文字色 */
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;   /* WCAG AA 4.5:1 on #fff (was #999 → 2.8:1) */
+  --color-text-hint: #8C8C8C;        /* WCAG AA 4.5:1 on #fff (was #C0C4CC → 2.1:1) */
+
+  /* 背景色 */
+  --bg-page: #F5F7FA;
+  --bg-card: #FFFFFF;
+  --border-color: #EBEDF0;
+
+  /* 间距 */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 20px;
+  --spacing-xxl: 24px;
+
+  /* 字号 */
+  --font-size-h1: 20px;
+  --font-size-h2: 18px;
+  --font-size-h3: 16px;
+  --font-size-body: 14px;
+  --font-size-caption: 12px;
+  --font-size-amount-lg: 24px;
+  --font-size-amount-md: 18px;
+
+  /* 圆角 */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+
+  /* 阴影 */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-elevated: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== 全局重置 ===== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC',
+    'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue', Arial, sans-serif;
+  font-size: var(--font-size-body);
+  color: var(--color-text-primary);
+  background: var(--bg-page);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ===== Vant 主题覆盖 ===== */
+
+:root {
+  --van-primary-color: var(--color-primary);
+  --van-nav-bar-background: var(--color-primary);
+  --van-nav-bar-title-text-color: #FFFFFF;
+  --van-nav-bar-icon-color: #FFFFFF;
+  --van-nav-bar-text-color: #FFFFFF;
+  --van-tabbar-item-active-color: var(--color-primary);
+  --van-button-primary-background: var(--color-primary);
+  --van-button-primary-border-color: var(--color-primary);
+}
+
+/* ===== 工具类 ===== */
+
+.safe-area-top {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 页面通用容器 */
+.page-container {
+  min-height: 100vh;
+  background: var(--bg-page);
+}
+
+/* 金额样式 */
+.amount-text {
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.amount-text-lg {
+  font-size: var(--font-size-amount-lg);
+}
+
+.amount-text-md {
+  font-size: var(--font-size-amount-md);
+}
+
+/* 文本截断 */
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 平台标签 */
+.platform-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: var(--font-size-caption);
+  line-height: 1.5;
+}
+
+.platform-wechat {
+  background: #E8F5E9;
+  color: #07C160;
+}
+
+.platform-alipay {
+  background: #E3F2FD;
+  color: #1677FF;
+}
+
+.platform-bank {
+  background: #FFF3E0;
+  color: #FF9800;
+}
+
+.platform-other {
+  background: #F3E5F5;
+  color: #9C27B0;
+}
