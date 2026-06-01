@@ -5,6 +5,12 @@ export const usePreferencesStore = defineStore('preferences', () => {
   // 添加按钮样式：'fab'（悬浮）| 'topbar'（顶部导航栏）
   const addButtonStyle = ref('fab')
 
+  // 首次访问标记
+  const firstVisitCompleted = ref(false)
+
+  // 数据迁移标记
+  const dataMigratedV4 = ref(false)
+
   // 交互开关
   const shakeEnabled = ref(true)
   const soundEnabled = ref(true)
@@ -28,12 +34,24 @@ export const usePreferencesStore = defineStore('preferences', () => {
     vibrateEnabled.value = val
   }
 
+  function setFirstVisitCompleted(val) {
+    firstVisitCompleted.value = val
+  }
+
+  function setDataMigratedV4(val) {
+    dataMigratedV4.value = val
+  }
+
   return {
     addButtonStyle,
+    firstVisitCompleted,
+    dataMigratedV4,
     shakeEnabled,
     soundEnabled,
     vibrateEnabled,
     setAddButtonStyle,
+    setFirstVisitCompleted,
+    setDataMigratedV4,
     setShakeEnabled,
     setSoundEnabled,
     setVibrateEnabled

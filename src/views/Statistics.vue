@@ -314,16 +314,16 @@ import { useRecordsStore } from '../stores/records'
 const router = useRouter()
 const store = useRecordsStore()
 
-const activePeriod = ref('month')
+const activePeriod = ref('today')
 const selectedPieCategory = ref('')
 
 const periodTabs = [
+  { key: 'today', label: '今日' },
   { key: 'month', label: '本月' },
-  { key: 'year', label: '本年' },
-  { key: '30d', label: '近30天' }
+  { key: 'year', label: '本年' }
 ]
 
-const periodLabelMap = { month: '本月', year: '本年', '30d': '近30天' }
+const periodLabelMap = { today: '今日', month: '本月', year: '本年' }
 const periodLabel = computed(() => periodLabelMap[activePeriod.value])
 
 // 颜色列表（稍亮的主色 + 渐变暗色）
@@ -352,6 +352,10 @@ function getPeriodRange(period) {
   const end = new Date(now)
 
   switch (period) {
+    case 'today':
+      start.setHours(0, 0, 0, 0)
+      end.setHours(23, 59, 59, 999)
+      break
     case 'month':
       start.setDate(1); start.setHours(0, 0, 0, 0)
       end.setMonth(now.getMonth() + 1, 0); end.setHours(23, 59, 59, 999)
@@ -359,10 +363,6 @@ function getPeriodRange(period) {
     case 'year':
       start.setMonth(0, 1); start.setHours(0, 0, 0, 0)
       end.setMonth(11, 31); end.setHours(23, 59, 59, 999)
-      break
-    case '30d':
-      start.setDate(now.getDate() - 29); start.setHours(0, 0, 0, 0)
-      end.setHours(23, 59, 59, 999)
       break
   }
   return { start, end }
@@ -398,7 +398,7 @@ const pieData = computed(() => {
   const total = Object.values(group).reduce((s, v) => s + v, 0)
   if (!total) return []
 
-  return Object.entries(group)
+  const result = Object.entries(group)
     .sort((a, b) => b[1] - a[1])
     .map(([key, val]) => ({
       key,
@@ -407,6 +407,15 @@ const pieData = computed(() => {
       amount: val,
       pct: (val / total) * 100
     }))
+
+  // 归一化：确保百分比总和精确为 100，避免图形间隙
+  const pctSum = result.reduce((s, item) => s + item.pct, 0)
+  if (pctSum > 0 && Math.abs(pctSum - 100) > 0.01) {
+    const factor = 100 / pctSum
+    result.forEach(item => { item.pct = item.pct * factor })
+  }
+
+  return result
 })
 
 const pieSlices = computed(() => {
@@ -426,8 +435,8 @@ const pieSlices = computed(() => {
     const largeArc = angle > Math.PI ? 1 : 0
     const path = `M ${pieCenter} ${pieCenter} L ${x1} ${y1} A ${pieRadius} ${pieRadius} 0 ${largeArc} 1 ${x2} ${y2} Z`
 
-    // 标签放在扇区半径 62% 处，确保不偏离图表
-    const labelR = pieRadius * 0.62
+    // 标签放在扇区半径 72% 处，远离中心圆避免遮挡
+    const labelR = pieRadius * 0.72
     const labelX = pieCenter + labelR * Math.cos(midAngle)
     const labelY = pieCenter + labelR * Math.sin(midAngle)
     const midX = pieCenter + (pieRadius / 2) * Math.cos(midAngle)

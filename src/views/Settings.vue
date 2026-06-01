@@ -361,7 +361,7 @@ function showClearDialog() {
 }
 
 function doClear() {
-  recordsStore.records = []
+  recordsStore.clearAllRecords()
   showToast({ message: '已清除全部记录', icon: 'success', duration: 1500 })
 }
 </script>

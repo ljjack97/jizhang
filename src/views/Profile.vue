@@ -111,6 +111,15 @@
         </div>
       </div>
     </van-overlay>
+
+    <!-- 隐藏的头像文件选择器 -->
+    <input
+      ref="avatarInput"
+      type="file"
+      accept="image/*"
+      style="display: none"
+      @change="onAvatarFileSelected"
+    />
   </div>
 </template>
 
@@ -176,9 +185,66 @@ function onPhoneSave() {
 
 // 头像放大预览
 const showAvatarPreview = ref(false)
+const avatarInput = ref(null)
 
 function onAvatarModify() {
-  showToast({ message: '头像更换功能开发中', duration: 1500 })
+  if (avatarInput.value) {
+    avatarInput.value.click()
+  }
+}
+
+function onAvatarFileSelected(event) {
+  const file = event.target.files[0]
+  if (!file) return
+
+  // 校验类型
+  if (!file.type.startsWith('image/')) {
+    showToast({ message: '请选择图片文件', duration: 1500 })
+    event.target.value = ''
+    return
+  }
+
+  // 校验大小（最大 5MB）
+  if (file.size > 5 * 1024 * 1024) {
+    showToast({ message: '图片大小不能超过5MB', duration: 1500 })
+    event.target.value = ''
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    const img = new Image()
+    img.onload = () => {
+      const base64 = resizeImage(img, 200, 200)
+      user.updateProfile({ avatar: base64 })
+      showToast({ message: '头像已更新', duration: 1000 })
+    }
+    img.src = e.target.result
+  }
+  reader.readAsDataURL(file)
+
+  // 重置 input，允许重复选择同一文件
+  event.target.value = ''
+}
+
+function resizeImage(img, maxWidth, maxHeight) {
+  const canvas = document.createElement('canvas')
+  let { width, height } = img
+
+  // 等比缩放
+  if (width > maxWidth || height > maxHeight) {
+    const ratio = Math.min(maxWidth / width, maxHeight / height)
+    width = Math.round(width * ratio)
+    height = Math.round(height * ratio)
+  }
+
+  canvas.width = width
+  canvas.height = height
+  const ctx = canvas.getContext('2d')
+  ctx.drawImage(img, 0, 0, width, height)
+
+  // JPEG 质量 0.8，结果约 10-30KB
+  return canvas.toDataURL('image/jpeg', 0.8)
 }
 
 // 导航

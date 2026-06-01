@@ -55,6 +55,11 @@ export const useRecordsStore = defineStore('records', () => {
     return true
   }
 
+  // 清除全部记录
+  function clearAllRecords() {
+    records.value = []
+  }
+
   // 删除记录
   function deleteRecord(id) {
     const index = records.value.findIndex(r => r.id === id)
@@ -99,6 +104,7 @@ export const useRecordsStore = defineStore('records', () => {
     addRecord,
     updateRecord,
     deleteRecord,
+    clearAllRecords,
     searchRecords
   }
 }, {

@@ -212,7 +212,7 @@ import { useRouter } from 'vue-router'
 import { useRecordsStore } from '../stores/records'
 import { usePreferencesStore } from '../stores/preferences'
 import { useClipboardStore } from '../stores/clipboard'
-import { seedData } from '../stores/seed'
+
 import { readClipboard, parsePaymentText } from '../utils/clipboard'
 import { useInteraction } from '../composables/useInteraction'
 import RecordCard from '../components/RecordCard.vue'
@@ -483,11 +483,6 @@ function goAdd() {
 function goStatistics() {
   showStats.value = false
   router.push('/statistics')
-}
-
-// ===== 初始化 =====
-if (store.records.length === 0) {
-  seedData.forEach(r => store.addRecord(r))
 }
 
 // 页面挂载时检测剪贴板

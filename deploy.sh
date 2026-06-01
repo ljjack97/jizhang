@@ -19,10 +19,10 @@ git add -A
 git commit -m "$MSG"
 
 echo "==> 推送到 GitHub Pages..."
-git push -f git@github.com:ljjack/jizhang.git gh-pages:gh-pages
+git push -f git@github.com:ljjack97/jizhang.git gh-pages:gh-pages
 
 cd ..
 rm -rf dist/.git
 
 echo "==> 部署完成！"
-echo "访问: https://ljjack.github.io/jizhang/"
+echo "访问: https://ljjack97.github.io/jizhang/"
