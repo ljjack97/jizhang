@@ -1,1 +1,0 @@
-import{y as u,ak as o}from"./index-CkWZrutd.js";const s=u("clipboard",()=>{const a=o(null);function t(e){a.value=e}function n(){const e=a.value;return a.value=null,e}function r(){a.value=null}return{parsedData:a,setParsedData:t,consumeData:n,clearData:r}});export{s as u};

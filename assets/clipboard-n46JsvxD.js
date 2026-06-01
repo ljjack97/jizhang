@@ -1,0 +1,1 @@
+import{v as u,af as o}from"./index-BI_1hsZo.js";const s=u("clipboard",()=>{const a=o(null);function t(e){a.value=e}function n(){const e=a.value;return a.value=null,e}function r(){a.value=null}return{parsedData:a,setParsedData:t,consumeData:n,clearData:r}});export{s as u};
